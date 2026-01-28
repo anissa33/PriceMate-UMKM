@@ -1,0 +1,1673 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PriceMate UMKM - Hitung Harga Jual Mudah</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome untuk Icon -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary-color: #2E7D32; /* Hijau Tua */
+            --primary-light: #4CAF50; /* Hijau Terang */
+            --secondary-color: #FFFFFF;
+            --bg-color: #F5F5F5;
+            --accent-color: #FBC02D; /* Kuning */
+            --text-main: #333333;
+            --premium-color: #9C27B0; /* Ungu untuk Premium */
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            min-height: 100vh;
+        }
+
+        /* Utility Classes */
+        .text-primary-custom { color: var(--primary-color); }
+        .bg-primary-custom { background-color: var(--primary-color) !important; color: white; }
+        .btn-primary-custom {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+            color: white;
+            transition: all 0.3s;
+        }
+        .btn-primary-custom:hover {
+            background-color: #1b5e20;
+            border-color: #1b5e20;
+            color: white;
+            transform: translateY(-2px);
+        }
+        .btn-accent {
+            background-color: var(--accent-color);
+            color: #333;
+            font-weight: 600;
+            border: none;
+        }
+        .btn-accent:hover {
+            background-color: #f9a825;
+            color: #333;
+        }
+        .btn-premium {
+            background-color: var(--premium-color);
+            color: white;
+            border: none;
+        }
+        .btn-premium:hover {
+            background-color: #7b1fa2;
+            color: white;
+        }
+        .text-premium {
+            color: var(--premium-color);
+        }
+        .badge-premium {
+            background-color: var(--premium-color) !important;
+            color: white;
+        }
+
+        /* Auth Container */
+        .auth-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #2E7D32 0%, #81c784 100%);
+        }
+
+        .auth-card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            overflow: hidden;
+            width: 100%;
+            max-width: 450px;
+            padding: 2rem;
+            position: relative;
+        }
+
+        /* Dashboard Styling */
+        .navbar-custom {
+            background-color: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            padding: 1rem 0;
+        }
+        
+        .navbar-brand {
+            font-weight: 700;
+            color: var(--primary-color) !important;
+            font-size: 1.5rem;
+        }
+
+        .card-custom {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            transition: transform 0.3s;
+            background: white;
+            height: 100%;
+            position: relative;
+        }
+
+        .card-custom:hover {
+            transform: translateY(-3px);
+        }
+
+        .card-header-custom {
+            background-color: transparent;
+            border-bottom: 2px solid #f0f0f0;
+            padding: 1.25rem;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .result-box {
+            background-color: #e8f5e9;
+            border-radius: 10px;
+            padding: 1.5rem;
+            text-align: center;
+            margin-top: 1rem;
+            border: 1px solid #c8e6c9;
+        }
+
+        .price-display {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .form-control:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.25rem rgba(46, 125, 50, 0.25);
+        }
+
+        /* Premium Feature Styling */
+        .premium-label {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: linear-gradient(135deg, var(--premium-color) 0%, #673AB7 100%);
+            color: white;
+            padding: 2px 10px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: bold;
+            z-index: 1;
+        }
+
+        .premium-feature {
+            position: relative;
+        }
+
+        /* Table Styling */
+        .table-custom thead {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .table-custom th {
+            border: none;
+        }
+        
+        .table-hover tbody tr:hover {
+            background-color: #f1f8e9;
+        }
+
+        /* Animation Classes */
+        .fade-in {
+            opacity: 0;
+        }
+        
+        .hidden {
+            display: none !important;
+        }
+
+        /* Alert styling */
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+        }
+
+        /* Subscription badge */
+        .subscription-badge {
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        /* Pricing card styling */
+        .pricing-card {
+            border: 2px solid #dee2e6;
+            border-radius: 10px;
+            overflow: hidden;
+            transition: all 0.3s;
+        }
+
+        .pricing-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+
+        .pricing-card.premium {
+            border-color: var(--premium-color);
+        }
+
+        .pricing-header {
+            padding: 2rem 1rem;
+            text-align: center;
+        }
+
+        .pricing-price {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin: 10px 0;
+        }
+
+        .feature-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .feature-list li {
+            margin-bottom: 10px;
+            display: flex;
+            align-items: flex-start;
+        }
+
+        .feature-list i {
+            margin-right: 10px;
+            margin-top: 3px;
+        }
+
+        .payment-option {
+            text-align: center;
+            padding: 20px 10px;
+            border: 2px solid #dee2e6;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .payment-option:hover {
+            border-color: var(--primary-color);
+            background-color: #f8f9fa;
+        }
+
+        .payment-option.selected {
+            border-color: var(--primary-color);
+            background-color: #e8f5e9;
+        }
+
+        /* Blur effect for locked premium features */
+        .premium-locked {
+            opacity: 0.6;
+            position: relative;
+        }
+
+        .premium-locked-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255,255,255,0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+            border-radius: 12px;
+        }
+
+        .premium-locked-text {
+            background: linear-gradient(135deg, var(--premium-color) 0%, #673AB7 100%);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        /* Free calculator styling */
+        .free-feature {
+            border: 2px solid var(--primary-color);
+        }
+
+        .free-badge {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 2px 10px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: bold;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            z-index: 1;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Toast Notification -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- ================= AUTH SECTION ================= -->
+    <div id="authSection" class="auth-container">
+        
+        <!-- LOGIN FORM -->
+        <div id="loginForm" class="auth-card fade-in">
+            <div class="text-center mb-4">
+                <i class="fas fa-calculator fa-3x text-primary-custom mb-2"></i>
+                <h3 class="fw-bold text-primary-custom">PriceMate UMKM</h3>
+                <p class="text-muted small">Masuk untuk mulai menghitung keuntungan</p>
+            </div>
+            
+            <form onsubmit="handleLogin(event)">
+                <div class="mb-3">
+                    <label class="form-label">Email</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                        <input type="email" class="form-control" id="loginEmail" placeholder="nama@email.com" required>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Password</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                        <input type="password" class="form-control" id="loginPassword" placeholder="******" required>
+                    </div>
+                </div>
+                <div class="mb-3 form-check">
+                    <input type="checkbox" class="form-check-input" id="rememberMe">
+                    <label class="form-check-label small" for="rememberMe">Ingat Saya</label>
+                </div>
+                <button type="submit" class="btn btn-primary-custom w-100 py-2 fw-bold">Masuk</button>
+            </form>
+            
+            <div class="text-center mt-4 pt-3 border-top">
+                <p class="small mb-0">Belum punya akun? <a href="#" onclick="switchAuth('register')" class="text-primary-custom fw-bold">Daftar Sekarang</a></p>
+            </div>
+        </div>
+
+        <!-- REGISTER FORM -->
+        <div id="registerForm" class="auth-card hidden fade-in">
+            <div class="text-center mb-4">
+                <h3 class="fw-bold text-primary-custom">Buat Akun Baru</h3>
+                <p class="text-muted small">Bergabunglah dengan komunitas UMKM pintar</p>
+            </div>
+            
+            <form onsubmit="handleRegister(event)">
+                <div class="mb-3">
+                    <label class="form-label">Nama Lengkap</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-user"></i></span>
+                        <input type="text" class="form-control" id="regName" placeholder="Nama Anda" required>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Email</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                        <input type="email" class="form-control" id="regEmail" placeholder="nama@email.com" required>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Password</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                        <input type="password" class="form-control" id="regPassword" placeholder="Min. 6 karakter" minlength="6" required>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary-custom w-100 py-2 fw-bold">Daftar</button>
+            </form>
+            
+            <div class="text-center mt-4 pt-3 border-top">
+                <p class="small mb-0">Sudah punya akun? <a href="#" onclick="switchAuth('login')" class="text-primary-custom fw-bold">Masuk Disini</a></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= DASHBOARD SECTION ================= -->
+    <div id="dashboardSection" class="hidden fade-in">
+        
+        <!-- Navbar -->
+        <nav class="navbar navbar-expand-lg navbar-custom sticky-top">
+            <div class="container">
+                <a class="navbar-brand" href="#">
+                    <i class="fas fa-coins me-2 text-warning"></i>PriceMate UMKM
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-auto align-items-center">
+                        <li class="nav-item me-3">
+                            <span class="text-muted small">Halo, <strong id="userNameDisplay" class="text-dark">User</strong></span>
+                            <span id="userSubscriptionBadge" class="subscription-badge ms-2 bg-secondary text-white"></span>
+                        </li>
+                        <li class="nav-item dropdown me-3">
+                            <a class="nav-link" href="#" id="subscriptionDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-crown me-1" id="subscriptionIcon"></i>
+                                <span id="subscriptionText">Langganan</span>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="subscriptionDropdown">
+                                <li><a class="dropdown-item" href="#" onclick="showPricingModal()"><i class="fas fa-gem me-2"></i>Upgrade ke Premium</a></li>
+                                <li><a class="dropdown-item" href="#" onclick="showSubscriptionDetails()"><i class="fas fa-receipt me-2"></i>Detail Langganan</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="#" onclick="showUsageStats()"><i class="fas fa-chart-bar me-2"></i>Statistik Penggunaan</a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item">
+                            <button onclick="handleLogout()" class="btn btn-outline-danger btn-sm rounded-pill px-3">
+                                <i class="fas fa-sign-out-alt me-1"></i> Keluar
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <div class="container py-5">
+            <div class="row g-4">
+                
+                <!-- Free Calculator Card -->
+                <div class="col-lg-7">
+                    <div class="card card-custom free-feature" id="freeCalculatorCard">
+                        <div class="free-badge">GRATIS</div>
+                        <div class="card-header-custom d-flex justify-content-between align-items-center">
+                            <span><i class="fas fa-calculator me-2"></i>Kalkulator Harga Dasar</span>
+                            <button onclick="resetForm()" class="btn btn-sm btn-outline-secondary" title="Reset Form"><i class="fas fa-redo"></i> Reset</button>
+                        </div>
+                        <div class="card-body p-4">
+                            <form id="calcForm" onsubmit="calculatePrice(event)">
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-bold">Modal Bahan Baku (Total)</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text">Rp</span>
+                                            <input type="number" class="form-control" id="inputModal" placeholder="0" min="0" required>
+                                        </div>
+                                        <div class="form-text small">Biaya beli bahan untuk satu batch produksi.</div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-bold">Biaya Operasional</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text">Rp</span>
+                                            <input type="number" class="form-control" id="inputOperasional" placeholder="0" min="0" required>
+                                        </div>
+                                        <div class="form-text small">Listrik, gas, tenaga kerja, kemasan, dll.</div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-bold">Jumlah Produk</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text"><i class="fas fa-box"></i></span>
+                                            <input type="number" class="form-control" id="inputJumlah" placeholder="0" min="1" required>
+                                        </div>
+                                        <div class="form-text small">Hasil produk dari modal di atas (pcs/porsi).</div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-bold">Target Keuntungan</label>
+                                        <div class="input-group">
+                                            <input type="number" class="form-control" id="inputMargin" placeholder="30" min="0" required>
+                                            <span class="input-group-text">%</span>
+                                        </div>
+                                        <div class="form-text small">Persentase keuntungan yang diinginkan.</div>
+                                    </div>
+                                </div>
+                                <div class="d-grid mt-4">
+                                    <button type="submit" class="btn btn-primary-custom py-2 fw-bold">
+                                        <i class="fas fa-paper-plane me-2"></i>Hitung Harga Jual
+                                    </button>
+                                </div>
+                            </form>
+                            
+                            <!-- Premium Features Preview -->
+                            <div class="mt-4 pt-3 border-top" id="premiumPreview">
+                                <h6 class="fw-bold text-premium mb-3">
+                                    <i class="fas fa-crown me-2"></i>Ingin Fitur Lebih Lengkap?
+                                </h6>
+                                <div class="row g-2">
+                                    <div class="col-6">
+                                        <div class="p-2 border rounded premium-locked">
+                                            <small class="d-block text-muted">Pajak (%)</small>
+                                            <span class="fw-bold text-premium">+ Fitur Premium</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="p-2 border rounded premium-locked">
+                                            <small class="d-block text-muted">Diskon Penjualan (%)</small>
+                                            <span class="fw-bold text-premium">+ Fitur Premium</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <button onclick="showPricingModal()" class="btn btn-premium btn-sm w-100 mt-3">
+                                    <i class="fas fa-gem me-2"></i>Upgrade ke Premium
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Result Card -->
+                <div class="col-lg-5">
+                    <div class="card card-custom bg-white" id="resultCard" style="opacity: 0.8;">
+                        <div class="card-header-custom border-bottom-0">
+                            <span><i class="fas fa-chart-line me-2"></i>Hasil Perhitungan</span>
+                        </div>
+                        <div class="card-body p-4 text-center d-flex flex-column justify-content-center h-100">
+                            
+                            <div id="emptyState">
+                                <img src="https://cdn-icons-png.flaticon.com/512/2921/2921226.png" alt="Calculator" width="100" class="mb-3 opacity-50">
+                                <p class="text-muted">Masukkan data di sebelah kiri untuk melihat rekomendasi harga.</p>
+                            </div>
+
+                            <div id="resultContent" class="hidden">
+                                <h6 class="text-muted text-uppercase fw-bold mb-1">Rekomendasi Harga Jual / Unit</h6>
+                                <div class="price-display mb-3">Rp <span id="resHargaJual">0</span></div>
+                                
+                                <div class="row g-2 mb-3">
+                                    <div class="col-6">
+                                        <div class="p-2 border rounded bg-light">
+                                            <small class="d-block text-muted">HPP (Modal) / Unit</small>
+                                            <span class="fw-bold">Rp <span id="resHPP">0</span></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="p-2 border rounded bg-light">
+                                            <small class="d-block text-muted">Untung / Unit</small>
+                                            <span class="fw-bold text-success">Rp <span id="resProfit">0</span></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="alert alert-warning py-2 mb-3 small">
+                                    <i class="fas fa-info-circle me-1"></i> Harga ini sudah termasuk margin <span id="resMarginText">0</span>%
+                                </div>
+
+                                <button onclick="saveCalculation()" class="btn btn-accent w-100" id="saveButton">
+                                    <i class="fas fa-save me-2"></i>Simpan ke Riwayat
+                                </button>
+                                
+                                <!-- Premium Export Options (Hidden for free users) -->
+                                <div id="premiumExportOptions" class="hidden mt-3">
+                                    <button onclick="exportToPDF()" class="btn btn-outline-primary btn-sm me-2">
+                                        <i class="fas fa-file-pdf me-1"></i>PDF
+                                    </button>
+                                    <button onclick="exportToExcel()" class="btn btn-outline-success btn-sm">
+                                        <i class="fas fa-file-excel me-1"></i>Excel
+                                    </button>
+                                </div>
+                                
+                                <!-- Free Export Option -->
+                                <div class="mt-3">
+                                    <button onclick="copyResultToClipboard()" class="btn btn-outline-secondary btn-sm w-100">
+                                        <i class="fas fa-copy me-1"></i>Salin Hasil
+                                    </button>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Advanced Features Section (Premium Only) -->
+            <div class="row mt-5" id="advancedFeaturesSection">
+                <div class="col-12">
+                    <div class="card card-custom">
+                        <div class="premium-locked-overlay" id="advancedFeaturesOverlay">
+                            <div class="premium-locked-text" onclick="showPricingModal()">
+                                <i class="fas fa-lock me-2"></i>Upgrade ke Premium untuk Fitur Lanjutan
+                            </div>
+                        </div>
+                        <div class="card-header-custom d-flex justify-content-between align-items-center">
+                            <span><i class="fas fa-rocket me-2 text-premium"></i>Fitur Premium</span>
+                            <span class="badge-premium badge">PREMIUM</span>
+                        </div>
+                        <div class="card-body">
+                            <div class="row g-4">
+                                <div class="col-md-6 col-lg-3">
+                                    <div class="text-center p-3 border rounded h-100 premium-locked">
+                                        <div class="mb-3">
+                                            <i class="fas fa-chart-pie fa-2x text-premium"></i>
+                                        </div>
+                                        <h6>Analisis Laba Rugi</h6>
+                                        <p class="small text-muted">Analisis mendalam untuk melihat titik impas dan proyeksi keuntungan.</p>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-lg-3">
+                                    <div class="text-center p-3 border rounded h-100 premium-locked">
+                                        <div class="mb-3">
+                                            <i class="fas fa-file-export fa-2x text-premium"></i>
+                                        </div>
+                                        <h6>Ekspor Laporan</h6>
+                                        <p class="small text-muted">Ekspor data ke PDF, Excel, atau format lain untuk presentasi.</p>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-lg-3">
+                                    <div class="text-center p-3 border rounded h-100 premium-locked">
+                                        <div class="mb-3">
+                                            <i class="fas fa-bell fa-2x text-premium"></i>
+                                        </div>
+                                        <h6>Notifikasi Harga</h6>
+                                        <p class="small text-muted">Dapatkan pemberitahuan saat harga bahan baku berubah.</p>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-lg-3">
+                                    <div class="text-center p-3 border rounded h-100 premium-locked">
+                                        <div class="mb-3">
+                                            <i class="fas fa-users fa-2x text-premium"></i>
+                                        </div>
+                                        <h6>Multi-User</h6>
+                                        <p class="small text-muted">Tambahkan tim untuk kolaborasi dalam perhitungan harga.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- History Section -->
+            <div class="row mt-5">
+                <div class="col-12">
+                    <div class="card card-custom">
+                        <div class="card-header-custom d-flex justify-content-between align-items-center">
+                            <span><i class="fas fa-history me-2"></i>Riwayat Perhitungan</span>
+                            <div>
+                                <button onclick="clearHistory()" class="btn btn-sm btn-outline-danger me-2">Hapus Semua</button>
+                                <span class="badge bg-info" id="historyLimitBadge">Maks. 10 riwayat</span>
+                            </div>
+                        </div>
+                        <div class="card-body p-0">
+                            <div class="table-responsive">
+                                <table class="table table-hover table-custom mb-0 align-middle">
+                                    <thead>
+                                        <tr>
+                                            <th class="ps-4">Tanggal</th>
+                                            <th>Jumlah Produk</th>
+                                            <th>Modal Total</th>
+                                            <th>HPP/Unit</th>
+                                            <th>Harga Jual</th>
+                                            <th>Profit/Unit</th>
+                                            <th class="text-end pe-4">Aksi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="historyTableBody">
+                                        <!-- Data will be populated here -->
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div id="noHistory" class="text-center py-5">
+                                <img src="https://cdn-icons-png.flaticon.com/512/4076/4076478.png" alt="No history" width="80" class="mb-3 opacity-50">
+                                <p class="text-muted mb-0">Belum ada riwayat perhitungan tersimpan.</p>
+                                <p class="text-muted small">Gunakan kalkulator untuk mulai menghitung!</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        
+        <footer class="bg-white py-4 mt-5 border-top">
+            <div class="container text-center">
+                <p class="text-muted mb-0 small">&copy; 2026 PriceMate UMKM. Dibuat untuk kemajuan UMKM Indonesia.</p>
+                <p class="text-muted small mt-1">
+                    <a href="#" onclick="showPricingModal()" class="text-decoration-none">Berlangganan</a> | 
+                    <a href="#" onclick="showTerms()" class="text-decoration-none">Syarat & Ketentuan</a> | 
+                    <a href="#" onclick="showPrivacy()" class="text-decoration-none">Kebijakan Privasi</a>
+                </p>
+            </div>
+        </footer>
+    </div>
+
+    <!-- ================= MODALS ================= -->
+
+    <!-- Pricing Modal -->
+    <div class="modal fade" id="pricingModal" tabindex="-1" aria-labelledby="pricingModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="pricingModalLabel">Pilih Paket Langganan</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row g-4">
+                        <!-- Free Plan -->
+                        <div class="col-md-6">
+                            <div class="pricing-card h-100">
+                                <div class="pricing-header bg-light">
+                                    <h4 class="fw-bold">GRATIS</h4>
+                                    <div class="pricing-price">Rp 0</div>
+                                    <p class="text-muted">/ selamanya</p>
+                                </div>
+                                <div class="p-4">
+                                    <ul class="feature-list">
+                                        <li><i class="fas fa-check text-success"></i> Kalkulator dasar</li>
+                                        <li><i class="fas fa-check text-success"></i> Simpan 10 riwayat</li>
+                                        <li><i class="fas fa-check text-success"></i> Hitung HPP & keuntungan</li>
+                                        <li><i class="fas fa-check text-success"></i> Salin hasil ke clipboard</li>
+                                        <li><i class="fas fa-times text-muted"></i> <span class="text-muted">Analisis laba rugi</span></li>
+                                        <li><i class="fas fa-times text-muted"></i> <span class="text-muted">Ekspor laporan</span></li>
+                                        <li><i class="fas fa-times text-muted"></i> <span class="text-muted">Perhitungan pajak & diskon</span></li>
+                                    </ul>
+                                    <button class="btn btn-outline-primary w-100 mt-3" onclick="selectPlan('free')" id="currentPlanBtnFree">
+                                        <i class="fas fa-check me-2"></i>Paket Saat Ini
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Premium Plan -->
+                        <div class="col-md-6">
+                            <div class="pricing-card premium h-100">
+                                <div class="pricing-header" style="background: linear-gradient(135deg, var(--premium-color) 0%, #673AB7 100%); color: white;">
+                                    <h4 class="fw-bold">PREMIUM</h4>
+                                    <div class="pricing-price">Rp 49.900</div>
+                                    <p>/ bulan</p>
+                                </div>
+                                <div class="p-4">
+                                    <ul class="feature-list">
+                                        <li><i class="fas fa-check text-premium"></i> <strong>Semua fitur gratis</strong></li>
+                                        <li><i class="fas fa-check text-premium"></i> Kalkulator lanjutan</li>
+                                        <li><i class="fas fa-check text-premium"></i> Simpan riwayat tak terbatas</li>
+                                        <li><i class="fas fa-check text-premium"></i> Analisis laba rugi lengkap</li>
+                                        <li><i class="fas fa-check text-premium"></i> Ekspor ke PDF & Excel</li>
+                                        <li><i class="fas fa-check text-premium"></i> Notifikasi harga real-time</li>
+                                        <li><i class="fas fa-check text-premium"></i> Perhitungan pajak & diskon</li>
+                                        <li><i class="fas fa-check text-premium"></i> Dukungan prioritas</li>
+                                    </ul>
+                                    <button class="btn btn-premium w-100 mt-3" onclick="selectPlan('premium')" id="currentPlanBtnPremium">
+                                        <i class="fas fa-crown me-2"></i>Pilih Premium
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Payment Methods -->
+                    <div class="mt-4 pt-4 border-top" id="paymentMethodsSection" style="display: none;">
+                        <h6 class="mb-3">Metode Pembayaran</h6>
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <div class="payment-option" onclick="selectPaymentMethod('bank_transfer')">
+                                    <i class="fas fa-university fa-2x mb-2"></i>
+                                    <h6>Transfer Bank</h6>
+                                    <p class="small text-muted">BCA, Mandiri, BRI, BNI</p>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="payment-option" onclick="selectPaymentMethod('ewallet')">
+                                    <i class="fas fa-wallet fa-2x mb-2"></i>
+                                    <h6>E-Wallet</h6>
+                                    <p class="small text-muted">GoPay, OVO, Dana, ShopeePay</p>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="payment-option" onclick="selectPaymentMethod('credit_card')">
+                                    <i class="fas fa-credit-card fa-2x mb-2"></i>
+                                    <h6>Kartu Kredit</h6>
+                                    <p class="small text-muted">Visa, MasterCard, JCB</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-4" id="paymentDetails" style="display: none;">
+                            <div class="alert alert-info">
+                                <h6>Instruksi Pembayaran:</h6>
+                                <p id="paymentInstructions">Pilih metode pembayaran untuk melihat instruksi.</p>
+                            </div>
+                            <button class="btn btn-success w-100" onclick="processPayment()">
+                                <i class="fas fa-lock me-2"></i>Bayar Sekarang
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Subscription Details Modal -->
+    <div class="modal fade" id="subscriptionDetailsModal" tabindex="-1" aria-labelledby="subscriptionDetailsModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="subscriptionDetailsModalLabel">Detail Langganan</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="text-center mb-4">
+                        <i class="fas fa-crown fa-3x text-premium mb-3"></i>
+                        <h4 id="subscriptionPlanName">Paket Gratis</h4>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <h6>Status Langganan</h6>
+                        <div class="d-flex justify-content-between">
+                            <span>Status:</span>
+                            <span class="badge bg-success" id="subscriptionStatus">Aktif</span>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <h6>Detail Pembayaran</h6>
+                        <div class="d-flex justify-content-between">
+                            <span>Paket:</span>
+                            <span id="subscriptionType">Gratis</span>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <span>Biaya:</span>
+                            <span id="subscriptionFee">Rp 0</span>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <span>Periode:</span>
+                            <span id="subscriptionPeriod">-</span>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <span>Berlaku hingga:</span>
+                            <span id="subscriptionExpiry">-</span>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <h6>Penggunaan Fitur</h6>
+                        <div class="d-flex justify-content-between">
+                            <span>Riwayat Tersimpan:</span>
+                            <span id="historyCount">0/10</span>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <span>Analisis Laba Rugi:</span>
+                            <span id="profitAnalysisAccess">Tidak Tersedia</span>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <span>Ekspor Laporan:</span>
+                            <span id="exportAccess">Tidak Tersedia</span>
+                        </div>
+                    </div>
+                    
+                    <div class="text-center mt-4">
+                        <button class="btn btn-premium" onclick="showPricingModal()">
+                            <i class="fas fa-gem me-2"></i>Upgrade ke Premium
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Anime.js CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <!-- Bootstrap 5 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        // --- 1. CONFIGURATION & STATE ---
+        const USERS_KEY = 'umkm_users';
+        const SESSION_KEY = 'umkm_session';
+        const TRANSACTIONS_KEY = 'umkm_transactions';
+        const FREE_HISTORY_LIMIT = 10;
+        let currentUser = null;
+        let lastCalculation = null;
+        let selectedPlan = null;
+        let selectedPaymentMethod = null;
+
+        // --- 2. AUTHENTICATION LOGIC ---
+
+        function initApp() {
+            checkSession();
+            animateEntry();
+        }
+
+        function checkSession() {
+            const session = JSON.parse(localStorage.getItem(SESSION_KEY));
+            if (session) {
+                const users = getUsers();
+                const validUser = users.find(u => u.email === session.email);
+                
+                if (validUser) {
+                    currentUser = validUser;
+                    showDashboard();
+                } else {
+                    localStorage.removeItem(SESSION_KEY);
+                    showAuth();
+                }
+            } else {
+                showAuth();
+            }
+        }
+
+        function getUsers() {
+            const users = JSON.parse(localStorage.getItem(USERS_KEY)) || [];
+            return users.map(user => {
+                if (!user.subscription) {
+                    user.subscription = {
+                        plan: 'free',
+                        expiryDate: null,
+                        paymentMethod: null,
+                        lastPaymentDate: null
+                    };
+                }
+                return user;
+            });
+        }
+
+        function saveUsers(users) {
+            localStorage.setItem(USERS_KEY, JSON.stringify(users));
+        }
+
+        function handleRegister(e) {
+            e.preventDefault();
+            const name = document.getElementById('regName').value;
+            const email = document.getElementById('regEmail').value;
+            const password = document.getElementById('regPassword').value;
+
+            const users = getUsers();
+            
+            if (users.find(u => u.email === email)) {
+                showToast('Email sudah terdaftar!', 'danger');
+                return;
+            }
+
+            const hashedPassword = btoa(password + "umkm_salt");
+
+            const newUser = {
+                name: name,
+                email: email,
+                password: hashedPassword,
+                subscription: {
+                    plan: 'free',
+                    expiryDate: null,
+                    paymentMethod: null,
+                    lastPaymentDate: null
+                },
+                history: [],
+                createdAt: new Date().toISOString()
+            };
+
+            users.push(newUser);
+            saveUsers(users);
+            
+            showToast('Registrasi berhasil! Silakan login.', 'success');
+            document.getElementById('regName').value = '';
+            document.getElementById('regEmail').value = '';
+            document.getElementById('regPassword').value = '';
+            switchAuth('login');
+        }
+
+        function handleLogin(e) {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            const remember = document.getElementById('rememberMe').checked;
+
+            const users = getUsers();
+            const hashedPassword = btoa(password + "umkm_salt");
+            const user = users.find(u => u.email === email && u.password === hashedPassword);
+
+            if (user) {
+                currentUser = user;
+                if (remember) {
+                    localStorage.setItem(SESSION_KEY, JSON.stringify({ email: user.email }));
+                }
+                showToast('Login berhasil! Selamat datang.', 'success');
+                showDashboard();
+            } else {
+                showToast('Email atau password salah!', 'danger');
+                anime({
+                    targets: '#loginForm',
+                    translateX: [0, -10, 10, -10, 10, 0],
+                    duration: 500
+                });
+            }
+        }
+
+        function handleLogout() {
+            localStorage.removeItem(SESSION_KEY);
+            currentUser = null;
+            location.reload();
+        }
+
+        // --- 3. UI MANAGEMENT ---
+
+        function switchAuth(type) {
+            if (type === 'register') {
+                document.getElementById('loginForm').classList.add('hidden');
+                document.getElementById('registerForm').classList.remove('hidden');
+                anime({
+                    targets: '#registerForm',
+                    opacity: [0, 1],
+                    translateY: [20, 0],
+                    duration: 600,
+                    easing: 'easeOutExpo'
+                });
+            } else {
+                document.getElementById('registerForm').classList.add('hidden');
+                document.getElementById('loginForm').classList.remove('hidden');
+                anime({
+                    targets: '#loginForm',
+                    opacity: [0, 1],
+                    translateY: [20, 0],
+                    duration: 600,
+                    easing: 'easeOutExpo'
+                });
+            }
+        }
+
+        function showAuth() {
+            document.getElementById('authSection').classList.remove('hidden');
+            document.getElementById('dashboardSection').classList.add('hidden');
+        }
+
+        function showDashboard() {
+            document.getElementById('authSection').classList.add('hidden');
+            document.getElementById('dashboardSection').classList.remove('hidden');
+            document.getElementById('userNameDisplay').textContent = currentUser.name;
+            
+            updateSubscriptionUI();
+            renderHistory();
+            setupPremiumFeatures();
+            
+            anime({
+                targets: '#dashboardSection',
+                opacity: [0, 1],
+                duration: 800,
+                easing: 'easeInOutQuad'
+            });
+            
+            anime({
+                targets: '.card-custom',
+                translateY: [50, 0],
+                opacity: [0, 1],
+                delay: anime.stagger(150),
+                easing: 'easeOutExpo'
+            });
+        }
+
+        // --- 4. SUBSCRIPTION MANAGEMENT ---
+
+        function updateSubscriptionUI() {
+            const subscription = currentUser.subscription;
+            const isPremium = subscription.plan === 'premium';
+            
+            const badge = document.getElementById('userSubscriptionBadge');
+            const icon = document.getElementById('subscriptionIcon');
+            const text = document.getElementById('subscriptionText');
+            
+            if (isPremium) {
+                badge.textContent = 'PREMIUM';
+                badge.className = 'subscription-badge ms-2 badge-premium';
+                icon.className = 'fas fa-crown me-1 text-premium';
+                text.textContent = 'Premium';
+            } else {
+                badge.textContent = 'GRATIS';
+                badge.className = 'subscription-badge ms-2 bg-secondary text-white';
+                icon.className = 'fas fa-crown me-1 text-muted';
+                text.textContent = 'Langganan';
+            }
+            
+            const freeBtn = document.getElementById('currentPlanBtnFree');
+            const premiumBtn = document.getElementById('currentPlanBtnPremium');
+            
+            if (isPremium) {
+                freeBtn.innerHTML = '<i class="fas fa-check me-2"></i>Pilih Gratis';
+                premiumBtn.innerHTML = '<i class="fas fa-check me-2"></i>Paket Saat Ini';
+            } else {
+                freeBtn.innerHTML = '<i class="fas fa-check me-2"></i>Paket Saat Ini';
+                premiumBtn.innerHTML = '<i class="fas fa-crown me-2"></i>Pilih Premium';
+            }
+        }
+
+        function setupPremiumFeatures() {
+            const isPremium = currentUser.subscription.plan === 'premium';
+            const advancedFeaturesOverlay = document.getElementById('advancedFeaturesOverlay');
+            
+            if (isPremium) {
+                advancedFeaturesOverlay.classList.add('hidden');
+                document.getElementById('premiumExportOptions').classList.remove('hidden');
+            } else {
+                advancedFeaturesOverlay.classList.remove('hidden');
+                document.getElementById('premiumExportOptions').classList.add('hidden');
+            }
+        }
+
+        function showPricingModal() {
+            const modal = new bootstrap.Modal(document.getElementById('pricingModal'));
+            modal.show();
+        }
+
+        function selectPlan(plan) {
+            selectedPlan = plan;
+            
+            const paymentMethodsSection = document.getElementById('paymentMethodsSection');
+            if (plan === 'premium') {
+                paymentMethodsSection.style.display = 'block';
+                anime({
+                    targets: paymentMethodsSection,
+                    opacity: [0, 1],
+                    translateY: [20, 0],
+                    duration: 600,
+                    easing: 'easeOutExpo'
+                });
+            } else {
+                paymentMethodsSection.style.display = 'none';
+                document.getElementById('paymentDetails').style.display = 'none';
+                
+                updateSubscription(plan);
+                const modal = bootstrap.Modal.getInstance(document.getElementById('pricingModal'));
+                modal.hide();
+                showToast('Berhasil beralih ke paket Gratis!', 'success');
+            }
+        }
+
+        function selectPaymentMethod(method) {
+            selectedPaymentMethod = method;
+            
+            document.querySelectorAll('.payment-option').forEach(option => {
+                option.classList.remove('selected');
+            });
+            
+            event.target.closest('.payment-option').classList.add('selected');
+            
+            const paymentDetails = document.getElementById('paymentDetails');
+            const instructions = document.getElementById('paymentInstructions');
+            
+            let instructionText = '';
+            switch(method) {
+                case 'bank_transfer':
+                    instructionText = 'Silakan transfer ke rekening BCA: 1234567890 a.n. PriceMate UMKM. Jumlah: Rp 49.900. Setelah transfer, konfirmasi via WhatsApp: 0812-3456-7890';
+                    break;
+                case 'ewallet':
+                    instructionText = 'Scan QR code atau gunakan nomor telepon 0812-3456-7890 di aplikasi e-wallet Anda. Jumlah: Rp 49.900';
+                    break;
+                case 'credit_card':
+                    instructionText = 'Masukkan detail kartu kredit Anda di halaman berikutnya. Pembayaran aman melalui Midtrans.';
+                    break;
+            }
+            
+            instructions.textContent = instructionText;
+            paymentDetails.style.display = 'block';
+            
+            anime({
+                targets: paymentDetails,
+                opacity: [0, 1],
+                translateY: [20, 0],
+                duration: 600,
+                easing: 'easeOutExpo'
+            });
+        }
+
+        function processPayment() {
+            if (!selectedPaymentMethod) {
+                showToast('Pilih metode pembayaran terlebih dahulu!', 'warning');
+                return;
+            }
+            
+            showToast('Memproses pembayaran...', 'info');
+            
+            setTimeout(() => {
+                const transaction = {
+                    id: 'TXN' + Date.now(),
+                    userId: currentUser.email,
+                    plan: 'premium',
+                    amount: 49900,
+                    paymentMethod: selectedPaymentMethod,
+                    status: 'completed',
+                    date: new Date().toISOString()
+                };
+                
+                const transactions = JSON.parse(localStorage.getItem(TRANSACTIONS_KEY)) || [];
+                transactions.push(transaction);
+                localStorage.setItem(TRANSACTIONS_KEY, JSON.stringify(transactions));
+                
+                updateSubscription('premium');
+                
+                const modal = bootstrap.Modal.getInstance(document.getElementById('pricingModal'));
+                modal.hide();
+                
+                showToast('Pembayaran berhasil! Akun Anda sekarang Premium.', 'success');
+            }, 2000);
+        }
+
+        function updateSubscription(plan) {
+            const users = getUsers();
+            const userIndex = users.findIndex(u => u.email === currentUser.email);
+            
+            if (userIndex !== -1) {
+                if (plan === 'premium') {
+                    const expiryDate = new Date();
+                    expiryDate.setDate(expiryDate.getDate() + 30);
+                    
+                    users[userIndex].subscription = {
+                        plan: 'premium',
+                        expiryDate: expiryDate.toISOString(),
+                        paymentMethod: selectedPaymentMethod,
+                        lastPaymentDate: new Date().toISOString()
+                    };
+                } else {
+                    users[userIndex].subscription = {
+                        plan: 'free',
+                        expiryDate: null,
+                        paymentMethod: null,
+                        lastPaymentDate: null
+                    };
+                }
+                
+                saveUsers(users);
+                currentUser = users[userIndex];
+                updateSubscriptionUI();
+                setupPremiumFeatures();
+                renderHistory();
+            }
+        }
+
+        function showSubscriptionDetails() {
+            const subscription = currentUser.subscription;
+            const isPremium = subscription.plan === 'premium';
+            
+            document.getElementById('subscriptionPlanName').textContent = 
+                isPremium ? 'Paket Premium' : 'Paket Gratis';
+            
+            document.getElementById('subscriptionStatus').textContent = 
+                isPremium ? 'Aktif' : 'Aktif';
+            document.getElementById('subscriptionStatus').className = 
+                isPremium ? 'badge bg-success' : 'badge bg-secondary';
+            
+            document.getElementById('subscriptionType').textContent = 
+                isPremium ? 'Premium' : 'Gratis';
+            
+            document.getElementById('subscriptionFee').textContent = 
+                isPremium ? 'Rp 49.900/bulan' : 'Rp 0';
+            
+            document.getElementById('subscriptionPeriod').textContent = 
+                isPremium ? '1 Bulan' : '-';
+            
+            if (isPremium && subscription.expiryDate) {
+                const expiry = new Date(subscription.expiryDate);
+                document.getElementById('subscriptionExpiry').textContent = 
+                    expiry.toLocaleDateString('id-ID');
+            } else {
+                document.getElementById('subscriptionExpiry').textContent = '-';
+            }
+            
+            const historyCount = currentUser.history ? currentUser.history.length : 0;
+            document.getElementById('historyCount').textContent = 
+                `${historyCount}${isPremium ? '' : '/10'}`;
+            
+            document.getElementById('profitAnalysisAccess').textContent = 
+                isPremium ? 'Tersedia' : 'Tidak Tersedia';
+            document.getElementById('exportAccess').textContent = 
+                isPremium ? 'Tersedia' : 'Tidak Tersedia';
+            
+            const modal = new bootstrap.Modal(document.getElementById('subscriptionDetailsModal'));
+            modal.show();
+        }
+
+        function showUsageStats() {
+            const stats = {
+                totalCalculations: currentUser.history ? currentUser.history.length : 0,
+                averageProfit: 0,
+                mostUsedMargin: 0
+            };
+            
+            if (currentUser.history && currentUser.history.length > 0) {
+                const totalProfit = currentUser.history.reduce((sum, item) => sum + (item.profitUnit || 0), 0);
+                stats.averageProfit = Math.round(totalProfit / currentUser.history.length);
+                
+                const margins = currentUser.history.map(item => item.margin || 0);
+                const marginCounts = {};
+                margins.forEach(margin => {
+                    marginCounts[margin] = (marginCounts[margin] || 0) + 1;
+                });
+                
+                let maxCount = 0;
+                for (const [margin, count] of Object.entries(marginCounts)) {
+                    if (count > maxCount) {
+                        maxCount = count;
+                        stats.mostUsedMargin = margin;
+                    }
+                }
+            }
+            
+            const message = `
+                <div class="alert alert-info">
+                    <h6><i class="fas fa-chart-bar me-2"></i>Statistik Penggunaan</h6>
+                    <p class="mb-1">Total Perhitungan: <strong>${stats.totalCalculations}</strong></p>
+                    <p class="mb-1">Rata-rata Keuntungan: <strong>Rp ${formatCurrency(stats.averageProfit)}</strong></p>
+                    <p class="mb-0">Margin Paling Sering Digunakan: <strong>${stats.mostUsedMargin}%</strong></p>
+                </div>
+            `;
+            
+            showToast(message, 'info', 5000);
+        }
+
+        // --- 5. TOAST NOTIFICATION ---
+
+        function showToast(message, type = 'success', duration = 3000) {
+            const toastContainer = document.getElementById('toastContainer');
+            const toastId = 'toast' + Date.now();
+            
+            const isHTML = message.includes('<');
+            
+            const colorClass = type === 'success' ? 'text-bg-success' : 
+                              type === 'danger' ? 'text-bg-danger' :
+                              type === 'warning' ? 'text-bg-warning' : 'text-bg-info';
+            
+            const icon = type === 'success' ? 'fa-check-circle' : 
+                        type === 'danger' ? 'fa-exclamation-circle' :
+                        type === 'warning' ? 'fa-exclamation-triangle' : 'fa-info-circle';
+            
+            const html = `
+                <div id="${toastId}" class="toast align-items-center ${colorClass} border-0 mb-2" role="alert" aria-live="assertive" aria-atomic="true">
+                    <div class="d-flex">
+                        <div class="toast-body">
+                            ${isHTML ? message : `<i class="fas ${icon} me-2"></i> ${message}`}
+                        </div>
+                        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                    </div>
+                </div>
+            `;
+            
+            toastContainer.insertAdjacentHTML('beforeend', html);
+            const toastEl = document.getElementById(toastId);
+            const toast = new bootstrap.Toast(toastEl, { delay: duration });
+            toast.show();
+            
+            toastEl.addEventListener('hidden.bs.toast', () => {
+                toastEl.remove();
+            });
+        }
+
+        // --- 6. CALCULATOR LOGIC (FREE FEATURES) ---
+
+        function formatCurrency(num) {
+            return new Intl.NumberFormat('id-ID').format(Math.ceil(num));
+        }
+
+        function calculatePrice(e) {
+            e.preventDefault();
+            
+            // Get Values
+            const modal = parseFloat(document.getElementById('inputModal').value) || 0;
+            const operasional = parseFloat(document.getElementById('inputOperasional').value) || 0;
+            const jumlah = parseFloat(document.getElementById('inputJumlah').value) || 1;
+            const marginPersen = parseFloat(document.getElementById('inputMargin').value) || 0;
+
+            // Basic Calculation
+            const totalBiaya = modal + operasional;
+            const hppPerUnit = totalBiaya / jumlah;
+            const marginNominal = hppPerUnit * (marginPersen / 100);
+            const hargaJual = hppPerUnit + marginNominal;
+
+            // Store temp result
+            lastCalculation = {
+                id: Date.now(),
+                date: new Date().toLocaleDateString('id-ID'),
+                modalTotal: totalBiaya,
+                qty: jumlah,
+                hpp: hppPerUnit,
+                margin: marginPersen,
+                profitUnit: marginNominal,
+                sellingPrice: hargaJual
+            };
+
+            // Display Results
+            document.getElementById('emptyState').classList.add('hidden');
+            document.getElementById('resultContent').classList.remove('hidden');
+            
+            // Animate Numbers
+            const counter = {
+                valHPP: 0,
+                valProfit: 0,
+                valJual: 0
+            };
+
+            anime({
+                targets: counter,
+                valHPP: hppPerUnit,
+                valProfit: marginNominal,
+                valJual: hargaJual,
+                easing: 'easeOutExpo',
+                round: 1,
+                duration: 1500,
+                update: function() {
+                    document.getElementById('resHPP').textContent = formatCurrency(counter.valHPP);
+                    document.getElementById('resProfit').textContent = formatCurrency(counter.valProfit);
+                    document.getElementById('resHargaJual').textContent = formatCurrency(counter.valJual);
+                }
+            });
+
+            document.getElementById('resMarginText').textContent = marginPersen;
+
+            // Highlight Result Card
+            document.getElementById('resultCard').style.opacity = '1';
+            document.getElementById('resultCard').classList.add('border-success');
+            setTimeout(() => {
+                document.getElementById('resultCard').classList.remove('border-success');
+            }, 2000);
+        }
+
+        function resetForm() {
+            document.getElementById('calcForm').reset();
+            document.getElementById('emptyState').classList.remove('hidden');
+            document.getElementById('resultContent').classList.add('hidden');
+            document.getElementById('resultCard').style.opacity = '0.8';
+            lastCalculation = null;
+        }
+
+        function copyResultToClipboard() {
+            if (!lastCalculation) {
+                showToast('Tidak ada hasil untuk disalin', 'warning');
+                return;
+            }
+            
+            const resultText = `
+Hasil Perhitungan Harga Jual:
+
+💰 Harga Jual per Unit: Rp ${formatCurrency(lastCalculation.sellingPrice)}
+📊 HPP per Unit: Rp ${formatCurrency(lastCalculation.hpp)}
+📈 Keuntungan per Unit: Rp ${formatCurrency(lastCalculation.profitUnit)}
+🎯 Margin: ${lastCalculation.margin}%
+
+📦 Jumlah Produk: ${lastCalculation.qty} pcs
+💰 Modal Total: Rp ${formatCurrency(lastCalculation.modalTotal)}
+
+Dihitung dengan PriceMate UMKM
+            `.trim();
+            
+            navigator.clipboard.writeText(resultText).then(() => {
+                showToast('Hasil berhasil disalin ke clipboard!', 'success');
+            }).catch(err => {
+                console.error('Failed to copy: ', err);
+                showToast('Gagal menyalin hasil', 'danger');
+            });
+        }
+
+        // --- 7. HISTORY MANAGEMENT ---
+
+        function saveCalculation() {
+            if (!lastCalculation || !currentUser) {
+                showToast('Tidak ada perhitungan untuk disimpan', 'warning');
+                return;
+            }
+            
+            const isPremium = currentUser.subscription.plan === 'premium';
+            const historyCount = currentUser.history ? currentUser.history.length : 0;
+            
+            // Check history limit for free users
+            if (!isPremium && historyCount >= FREE_HISTORY_LIMIT) {
+                showToast(`Paket gratis hanya dapat menyimpan ${FREE_HISTORY_LIMIT} riwayat. Upgrade ke Premium untuk penyimpanan tak terbatas.`, 'warning');
+                showPricingModal();
+                return;
+            }
+
+            // Add to current user history
+            if (!currentUser.history) {
+                currentUser.history = [];
+            }
+            currentUser.history.unshift(lastCalculation);
+            
+            // Update LocalStorage
+            const users = getUsers();
+            const userIndex = users.findIndex(u => u.email === currentUser.email);
+            if (userIndex !== -1) {
+                users[userIndex] = currentUser;
+                saveUsers(users);
+                showToast('Perhitungan berhasil disimpan!', 'success');
+                renderHistory();
+            }
+        }
+
+        function renderHistory() {
+            const tbody = document.getElementById('historyTableBody');
+            const noHistory = document.getElementById('noHistory');
+            
+            tbody.innerHTML = '';
+            
+            if (!currentUser.history || currentUser.history.length === 0) {
+                noHistory.classList.remove('hidden');
+                return;
+            } else {
+                noHistory.classList.add('hidden');
+            }
+
+            // Limit display for free users
+            const displayHistory = currentUser.subscription.plan === 'free' ? 
+                currentUser.history.slice(0, FREE_HISTORY_LIMIT) : currentUser.history;
+
+            displayHistory.forEach((item) => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td class="ps-4 small text-muted">${item.date}</td>
+                    <td><span class="badge bg-secondary">${item.qty} pcs</span></td>
+                    <td>Rp ${formatCurrency(item.modalTotal)}</td>
+                    <td>Rp ${formatCurrency(item.hpp)}</td>
+                    <td class="fw-bold text-primary">Rp ${formatCurrency(item.sellingPrice)}</td>
+                    <td class="text-success small">+Rp ${formatCurrency(item.profitUnit)}</td>
+                    <td class="text-end pe-4">
+                        <button onclick="loadSimulation(${item.id})" class="btn btn-sm btn-outline-primary me-1" title="Simulasi Ulang"><i class="fas fa-edit"></i></button>
+                        <button onclick="deleteHistory(${item.id})" class="btn btn-sm btn-outline-danger" title="Hapus"><i class="fas fa-trash"></i></button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+            
+            // Update history limit badge
+            const badge = document.getElementById('historyLimitBadge');
+            const historyCount = currentUser.history ? currentUser.history.length : 0;
+            
+            if (currentUser.subscription.plan === 'free') {
+                badge.textContent = `${historyCount}/${FREE_HISTORY_LIMIT} riwayat`;
+                badge.className = 'badge bg-warning';
+                
+                if (historyCount >= FREE_HISTORY_LIMIT) {
+                    badge.className = 'badge bg-danger';
+                    showToast('Anda telah mencapai batas penyimpanan riwayat. Upgrade ke Premium untuk penyimpanan tak terbatas.', 'warning');
+                }
+            } else {
+                badge.textContent = `${historyCount} riwayat`;
+                badge.className = 'badge bg-info';
+            }
+        }
+
+        function deleteHistory(id) {
+            if (!confirm('Yakin ingin menghapus riwayat ini?')) return;
+            
+            currentUser.history = currentUser.history.filter(item => item.id !== id);
+            
+            const users = getUsers();
+            const userIndex = users.findIndex(u => u.email === currentUser.email);
+            if (userIndex !== -1) {
+                users[userIndex] = currentUser;
+                saveUsers(users);
+                renderHistory();
+                showToast('Riwayat berhasil dihapus.', 'success');
+            }
+        }
+
+        function clearHistory() {
+            if(!confirm('Yakin ingin menghapus SEMUA riwayat?')) return;
+            
+            currentUser.history = [];
+            const users = getUsers();
+            const userIndex = users.findIndex(u => u.email === currentUser.email);
+            if (userIndex !== -1) {
+                users[userIndex] = currentUser;
+                saveUsers(users);
+                renderHistory();
+                showToast('Semua riwayat berhasil dihapus.', 'success');
+            }
+        }
+
+        function loadSimulation(id) {
+            const item = currentUser.history.find(i => i.id === id);
+            if(item) {
+                document.getElementById('inputModal').value = Math.round(item.modalTotal);
+                document.getElementById('inputOperasional').value = 0; 
+                document.getElementById('inputJumlah').value = item.qty;
+                document.getElementById('inputMargin').value = item.margin;
+                
+                document.querySelector('.navbar').scrollIntoView({behavior: 'smooth'});
+                showToast('Data berhasil dimuat. Sesuaikan jika perlu!', 'info');
+                
+                anime({
+                    targets: '#calcForm',
+                    scale: [1, 1.02, 1],
+                    duration: 400,
+                    easing: 'easeOutQuad'
+                });
+            }
+        }
+
+        // --- 8. PREMIUM FEATURE FUNCTIONS ---
+
+        function showPremiumFeature(feature) {
+            if (currentUser.subscription.plan !== 'premium') {
+                showPricingModal();
+                return;
+            }
+            
+            switch(feature) {
+                case 'profitAnalysis':
+                    showToast('Membuka analisis laba rugi...', 'info');
+                    break;
+                case 'exportReport':
+                    showToast('Mempersiapkan ekspor laporan...', 'info');
+                    break;
+                case 'priceAlerts':
+                    showToast('Mengatur notifikasi harga...', 'info');
+                    break;
+                case 'multiUser':
+                    showToast('Membuka pengaturan tim...', 'info');
+                    break;
+            }
+        }
+
+        function exportToPDF() {
+            if (currentUser.subscription.plan !== 'premium') {
+                showPricingModal();
+                return;
+            }
+            
+            showToast('Mempersiapkan PDF... (Fitur demo)', 'info');
+        }
+
+        function exportToExcel() {
+            if (currentUser.subscription.plan !== 'premium') {
+                showPricingModal();
+                return;
+            }
+            
+            showToast('Mempersiapkan Excel... (Fitur demo)', 'info');
+        }
+
+        function showTerms() {
+            const terms = `
+                <div class="alert alert-light">
+                    <h6><i class="fas fa-file-contract me-2"></i>Syarat & Ketentuan</h6>
+                    <p class="small mb-2">1. PriceMate UMKM adalah alat bantu perhitungan harga untuk UMKM.</p>
+                    <p class="small mb-2">2. Pengguna bertanggung jawab penuh atas data yang dimasukkan.</p>
+                    <p class="small mb-2">3. Paket Gratis dapat menyimpan maksimal 10 riwayat.</p>
+                    <p class="small mb-0">4. Paket Premium dapat dibatalkan kapan saja.</p>
+                </div>
+            `;
+            showToast(terms, 'info', 6000);
+        }
+
+        function showPrivacy() {
+            const privacy = `
+                <div class="alert alert-light">
+                    <h6><i class="fas fa-shield-alt me-2"></i>Kebijakan Privasi</h6>
+                    <p class="small mb-2">1. Data Anda disimpan secara lokal di browser.</p>
+                    <p class="small mb-2">2. Kami tidak mengumpulkan data sensitif.</p>
+                    <p class="small mb-0">3. Data perhitungan hanya dapat diakses oleh Anda.</p>
+                </div>
+            `;
+            showToast(privacy, 'info', 6000);
+        }
+
+        function animateEntry() {
+            anime({
+                targets: '.auth-card',
+                translateY: [50, 0],
+                opacity: [0, 1],
+                duration: 1000,
+                easing: 'easeOutExpo'
+            });
+        }
+
+        // --- 9. INITIALIZATION ---
+        window.onload = initApp;
+
+    </script>
+</body>
+</html>
